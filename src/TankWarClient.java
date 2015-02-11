@@ -15,18 +15,32 @@ public class TankWarClient extends Frame{
 	public static final int GAME_HEIGTH = 600;
 	
 
-	Tank myTank = new Tank(50, 50, this  );
+	Tank myTank = new Tank(50, 50, true, this);
+	Tank enemyTank = new Tank(100, 100, false, this);
 	List<Missile> missiles = new ArrayList<Missile>();
-	
+	List<Explode> explodes = new ArrayList<Explode>();
+	Explode e = new Explode(300, 300, this);
 	
 	Image offScreenImage = null;
 	
 	public void paint(Graphics g) {
 		g.drawString("Missiles count: " + missiles.size(), 10, 50);
+		g.drawString("Explodes count: "+ explodes.size(), 10, 70);
+		
 		myTank.draw(g);
+		enemyTank.draw(g); 
+		
 		for(int i=0; i<missiles.size(); i++) {
 			Missile m = missiles.get(i);
+			//if( !m.isLive()) missiles.remove(m);
+			//else m.draw(g);
 			m.draw(g);
+			m.hitTank(enemyTank);
+		}
+		
+		for(int i=0; i<explodes.size(); i++) {
+			Explode e = explodes.get(i);
+			e.draw(g);
 		}
 		
 	}

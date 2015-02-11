@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 
 import org.omg.CORBA.PUBLIC_MEMBER;
@@ -11,26 +12,39 @@ public class Tank {
 	public static final int YSPEED = 5;
 	public static final int WIDTH = 30;
 	public static final int HEIGH = 30;
+	private boolean live = true;
 	private boolean bL = false, bU = false, bR = false, bD = false;
 	enum Direction {L, LU, U, RU, R, RD, D, LD, STOP};
 	private Direction dir = Direction.STOP;
+	private boolean good;
 	TankWarClient tc;
 	private Direction ptDir = Direction.D;
 	
-	public Tank(int x, int y) {
+	public Tank(int x, int y, boolean good) {
 		
 		this.x = x;
 		this.y = y;
+		this.good = good;
 	}
 	
-	public Tank(int x, int y, TankWarClient tc) {
-		this(x,y);
+	public Tank(int x, int y, boolean good, TankWarClient tc) {
+		this(x,y,good);
 		this.tc = tc;
 	}
 	
+	public boolean isLive() {
+		return live;
+	}
+
+	public void setLive(boolean live) {
+		this.live = live;
+	}
+
 	public void draw(Graphics g) {
+		if(!live) return;
 		Color c = g.getColor();
-		g.setColor(Color.red);
+		if(good) g.setColor(Color.red);
+		else g.setColor(Color.white);
 		g.fillOval(x, y, WIDTH, HEIGH);//»­Ô²µÄ·½·¨
 		g.setColor(c);
 		switch(ptDir) {
@@ -99,6 +113,11 @@ public class Tank {
 		if(this.dir != Direction.STOP) {
 			this.ptDir = this.dir;
 		}
+		
+		if(x<0) x = 0;
+		if(y<30) y = 30;
+		if(x>TankWarClient.GAME_WIDTH-Tank.WIDTH)  x =  TankWarClient.GAME_WIDTH-Tank.WIDTH;
+		if(y>TankWarClient.GAME_HEIGTH-Tank.HEIGH) y = TankWarClient.GAME_HEIGTH-Tank.HEIGH;
 	}
 	
 	public void keyPressed(KeyEvent e) {
@@ -170,9 +189,13 @@ public class Tank {
 	public Missile fire() {
 		int x = this.x + Tank.WIDTH/2 - Missile.WIDTH/2;
 		int y = this.y + Tank.HEIGH/2 - Missile.HEIGH/2;
-		Missile m = new Missile(x, y, ptDir);
+		Missile m = new Missile(x, y, ptDir, this.tc );
 		tc.missiles.add(m);
 		return m;
+	}
+	
+	public Rectangle getRect() {
+		return new Rectangle(x, y, WIDTH, HEIGH);
 	}
 }
 
