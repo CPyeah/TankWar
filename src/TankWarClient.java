@@ -7,40 +7,55 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.omg.PortableServer.THREAD_POLICY_ID;
+
 
 
 public class TankWarClient extends Frame{
 	public static final int GAME_WIDTH = 800;
 	public static final int GAME_HEIGTH = 600;
 	
-
-	Tank myTank = new Tank(50, 50, true, this);
-	Tank enemyTank = new Tank(100, 100, false, this);
+	Wall w1 = new Wall(100, 150, 20, 200, this);
+	Wall w2 = new Wall(300, 400, 150, 10, this);
+	Tank myTank = new Tank(350, 500, true, Tank.Direction.STOP, this);
 	List<Missile> missiles = new ArrayList<Missile>();
 	List<Explode> explodes = new ArrayList<Explode>();
-	Explode e = new Explode(300, 300, this);
+	List<Tank> tanks = new ArrayList<Tank>();
+	
 	
 	Image offScreenImage = null;
 	
 	public void paint(Graphics g) {
 		g.drawString("Missiles count: " + missiles.size(), 10, 50);
 		g.drawString("Explodes count: "+ explodes.size(), 10, 70);
+		g.drawString(" Tanks count: " + tanks.size(), 10, 90);
 		
 		myTank.draw(g);
-		enemyTank.draw(g); 
+		w1.draw(g);
+		w2.draw(g);
+		
 		
 		for(int i=0; i<missiles.size(); i++) {
 			Missile m = missiles.get(i);
 			//if( !m.isLive()) missiles.remove(m);
 			//else m.draw(g);
+			m.hitTanks(tanks);
+			m.hitTank(myTank);
 			m.draw(g);
-			m.hitTank(enemyTank);
+			m.hitWall(w1);
+			m.hitWall(w2);
+			
 		}
 		
 		for(int i=0; i<explodes.size(); i++) {
 			Explode e = explodes.get(i);
 			e.draw(g);
+		}
+		
+		for(int i = 0; i<tanks.size(); i++) {
+			Tank t = tanks.get(i);
+			t.draw(g);
+			t.hitsWall(w1);
+			t.hitsWall(w2);
 		}
 		
 	}
@@ -90,6 +105,11 @@ public class TankWarClient extends Frame{
 	}
 	
 	public void launchFrame() {
+		
+		for(int i=0; i<10; i++) {
+			tanks.add(new Tank(50+40*(i+1), 50, false, Tank.Direction.D,  this));
+		}
+		
 		this.setLocation(200,100);
 		this.setSize(GAME_WIDTH, GAME_HEIGTH);
 		this.setTitle("Tank War");//改变标题 
