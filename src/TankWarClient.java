@@ -4,6 +4,8 @@ import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.omg.PortableServer.THREAD_POLICY_ID;
 
@@ -13,14 +15,21 @@ public class TankWarClient extends Frame{
 	public static final int GAME_HEIGTH = 600;
 	
 
-	Tank myTank = new Tank(50, 50);
+	Tank myTank = new Tank(50, 50, this  );
+	List<Missile> missiles = new ArrayList<Missile>();
+	
 	
 	Image offScreenImage = null;
+	
 	public void paint(Graphics g) {
+		g.drawString("Missiles count: " + missiles.size(), 10, 50);
 		myTank.draw(g);
+		for(int i=0; i<missiles.size(); i++) {
+			Missile m = missiles.get(i);
+			m.draw(g);
+		}
 		
-		
-	}//画出一个圆，重画时y+5
+	}
 	
 
 	public void update(Graphics g) {
@@ -54,12 +63,18 @@ public class TankWarClient extends Frame{
 
 	private class KeyMonitor extends KeyAdapter {
 
+		public void keyReleased(KeyEvent e) {
+			
+			myTank.keyReleased(e);
+		}
+
 		public void keyPressed(KeyEvent e){
 			myTank.keyPressed(e);
 		}
 		
 		
 	}
+	
 	public void launchFrame() {
 		this.setLocation(200,100);
 		this.setSize(GAME_WIDTH, GAME_HEIGTH);
@@ -72,7 +87,7 @@ public class TankWarClient extends Frame{
 		});//关闭窗口
 		this.setResizable(false);//让窗口不能改变大小
 		setVisible(true);
-		new Thread(new PaintThread()).start();
+		new Thread(new PaintThread()).start();//线程开始
 		this.addKeyListener(new KeyMonitor());
 	}
 	

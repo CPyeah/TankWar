@@ -2,14 +2,20 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 
+import org.omg.CORBA.PUBLIC_MEMBER;
+
 
 public class Tank {
 	private int x, y;
 	public static final int XSPEED = 5;
 	public static final int YSPEED = 5;
+	public static final int WIDTH = 30;
+	public static final int HEIGH = 30;
 	private boolean bL = false, bU = false, bR = false, bD = false;
 	enum Direction {L, LU, U, RU, R, RD, D, LD, STOP};
 	private Direction dir = Direction.STOP;
+	TankWarClient tc;
+	private Direction ptDir = Direction.D;
 	
 	public Tank(int x, int y) {
 		
@@ -17,13 +23,42 @@ public class Tank {
 		this.y = y;
 	}
 	
-	
+	public Tank(int x, int y, TankWarClient tc) {
+		this(x,y);
+		this.tc = tc;
+	}
 	
 	public void draw(Graphics g) {
 		Color c = g.getColor();
 		g.setColor(Color.red);
-		g.fillOval(x, y, 30, 30);//画圆的方法
+		g.fillOval(x, y, WIDTH, HEIGH);//画圆的方法
 		g.setColor(c);
+		switch(ptDir) {
+		case L: 
+			g.drawLine(x + Tank.WIDTH/2, y + Tank.HEIGH/2, x, y + Tank.HEIGH/2);
+			break;
+		case LU:
+			g.drawLine(x + Tank.WIDTH/2, y + Tank.HEIGH/2, x, y);
+			break;
+		case U:
+			g.drawLine(x + Tank.WIDTH/2, y + Tank.HEIGH/2, x + Tank.WIDTH/2, y );
+			break;
+		case RU:
+			g.drawLine(x + Tank.WIDTH/2, y + Tank.HEIGH/2, x + Tank.WIDTH, y);
+			break;
+		case R:
+			g.drawLine(x + Tank.WIDTH/2, y + Tank.HEIGH/2, x + Tank.WIDTH, y + Tank.HEIGH/2);
+			break;
+		case RD:
+			g.drawLine(x + Tank.WIDTH/2, y + Tank.HEIGH/2, x + Tank.WIDTH, y + Tank.HEIGH);
+			break;
+		case D:
+			g.drawLine(x + Tank.WIDTH/2, y + Tank.HEIGH/2, x + Tank.WIDTH/2, y + Tank.HEIGH);
+			break;
+		case LD:
+			g.drawLine(x + Tank.WIDTH/2, y + Tank.HEIGH/2, x, y + Tank.HEIGH);
+			break;
+		}
 		move();
 	}
 	
@@ -59,6 +94,10 @@ public class Tank {
 			break;
 		case STOP:
 			break;
+		}
+		
+		if(this.dir != Direction.STOP) {
+			this.ptDir = this.dir;
 		}
 	}
 	
@@ -101,6 +140,39 @@ public class Tank {
 			dir = Direction.LD;
 		else if(!bL && !bU && !bR && !bD)
 			dir = Direction.STOP ;
+	}
+
+
+
+	public void keyReleased(KeyEvent e) {
+		int key = e.getKeyCode();
+		
+		switch(key) {
+		case KeyEvent.VK_CONTROL:
+			fire();
+			break;
+		case KeyEvent.VK_LEFT:
+			bL = false;
+			break;
+		case KeyEvent.VK_UP:
+			bU = false;
+			break;
+		case KeyEvent.VK_RIGHT:
+			bR = false;
+			break;
+		case KeyEvent.VK_DOWN:
+			bD = false;
+			break;
+		}
+		locateDirction(); 
+	}
+	
+	public Missile fire() {
+		int x = this.x + Tank.WIDTH/2 - Missile.WIDTH/2;
+		int y = this.y + Tank.HEIGH/2 - Missile.HEIGH/2;
+		Missile m = new Missile(x, y, ptDir);
+		tc.missiles.add(m);
+		return m;
 	}
 }
 
