@@ -54,8 +54,9 @@ public class TankWarClient extends Frame{
 		for(int i = 0; i<tanks.size(); i++) {
 			Tank t = tanks.get(i);
 			t.draw(g);
-			t.hitsWall(w1);
-			t.hitsWall(w2);
+			t.hitWall(w1);
+			t.hitWall(w2);
+			t.hitTanks(tanks);
 		}
 		
 	}

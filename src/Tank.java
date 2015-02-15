@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
+import java.util.List;
 import java.util.Random;
 
 import org.omg.CORBA.PUBLIC_MEMBER;
@@ -210,6 +211,9 @@ public class Tank {
 		case KeyEvent.VK_CONTROL:
 			fire();
 			break;
+		case KeyEvent.VK_A:
+			this.superFire();
+			break;
 		case KeyEvent.VK_LEFT:
 			bL = false;
 			break;
@@ -236,16 +240,46 @@ public class Tank {
 		return m;
 	}
 	
+	public Missile fire(Direction dir) {
+		if(!live) 
+			return null;
+		int x = this.x + Tank.WIDTH/2 - Missile.WIDTH/2;
+		int y = this.y + Tank.HEIGH/2 - Missile.HEIGH/2;
+		Missile m = new Missile(x, y, good, dir, this.tc );
+		tc.missiles.add(m);
+		return m;
+	}
+	
+	public void superFire() {
+		Direction[] dirs = Direction.values();
+		for(int i=0; i<dirs.length-1; i++) {
+			fire(dirs[i]);
+		}
+	}
+	
 	public Rectangle getRect() {
 		return new Rectangle(x, y, WIDTH, HEIGH);
 	}
 	
-	public boolean hitsWall(Wall w) {
+	public boolean hitWall(Wall w) {
 		if(this.live && this.getRect().intersects(w.getRect())) {
 			this.stay();
 			return true;
 		}
 		return false;
+	}
+	
+	public boolean hitTanks(List<Tank> tanks) {
+		for(int i=0; i<tanks.size(); i++) {
+			Tank t = tanks.get(i);
+			if(this!=t) {
+				if(this.live && t.isLive() && this.getRect().intersects(t.getRect())) {
+					this.stay();
+					return true;
+				}
+			}
+		}
+		return false;	
 	}
 }
 
