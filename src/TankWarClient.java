@@ -28,6 +28,7 @@ public class TankWarClient extends Frame{
 		g.drawString("Missiles count: " + missiles.size(), 10, 50);
 		g.drawString("Explodes count: "+ explodes.size(), 10, 70);
 		g.drawString(" Tanks count: " + tanks.size(), 10, 90);
+		g.drawString("Mytank  life: " + myTank.getLife(), 10, 110);
 		
 		myTank.draw(g);
 		w1.draw(g);

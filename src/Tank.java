@@ -17,6 +17,9 @@ public class Tank {
 	public static final int HEIGH = 30;
 	private static Random  r = new Random();
 	private boolean live = true;
+	private int life = 100; 
+	
+
 	private boolean bL = false, bU = false, bR = false, bD = false;
 	enum Direction {L, LU, U, RU, R, RD, D, LD, STOP};
 	private Direction dir = Direction.STOP;
@@ -51,6 +54,14 @@ public class Tank {
 	
 	public boolean  isGood() {
 		return good;
+	}
+	
+	public int getLife() {
+		return life;
+	}
+
+	public void setLife(int life) {
+		this.life = life;
 	}
 
 	public void draw(Graphics g) {
@@ -281,6 +292,8 @@ public class Tank {
 		}
 		return false;	
 	}
+
+	
 }
 
 
