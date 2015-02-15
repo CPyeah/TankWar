@@ -72,7 +72,11 @@ public class Tank {
 			return;
 		}
 		Color c = g.getColor();
-		if(good) g.setColor(Color.red);
+		if(good) {
+			g.setColor(Color.red);
+			BloodBar bb = new BloodBar();
+			bb.draw( g);
+		}
 		else g.setColor(Color.white);
 		g.fillOval(x, y, WIDTH, HEIGH);//»­Ô²µÄ·½·¨
 		g.setColor(c);
@@ -291,6 +295,17 @@ public class Tank {
 			}
 		}
 		return false;	
+	}
+	
+	
+	private class BloodBar {
+		void draw(Graphics g) {
+			Color c = g.getColor();
+			g.setColor(Color.red);
+			g.drawRect(x, y-10, WIDTH, 7);
+			g.fillRect(x, y-10, WIDTH*life/100, 7 );
+			g.setColor(c);
+		}
 	}
 
 	
