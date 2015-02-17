@@ -297,6 +297,16 @@ public class Tank {
 		return false;	
 	}
 	
+	public boolean eat(Blood b) {
+		if(this.isLive() && b.isLive() && this.getRect().intersects(b.getRect())){
+			b.setLive(false);
+			this.life = 100;
+			return true;
+		}
+		
+		return false;
+	}
+	
 	
 	private class BloodBar {
 		void draw(Graphics g) {

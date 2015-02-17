@@ -20,7 +20,7 @@ public class TankWarClient extends Frame{
 	List<Missile> missiles = new ArrayList<Missile>();
 	List<Explode> explodes = new ArrayList<Explode>();
 	List<Tank> tanks = new ArrayList<Tank>();
-	
+	Blood b = new Blood();
 	
 	Image offScreenImage = null;
 	
@@ -31,9 +31,10 @@ public class TankWarClient extends Frame{
 		g.drawString("Mytank  life: " + myTank.getLife(), 10, 110);
 		
 		myTank.draw(g);
+		myTank.eat(b);
 		w1.draw(g);
 		w2.draw(g);
-		
+		b.draw(g);
 		
 		for(int i=0; i<missiles.size(); i++) {
 			Missile m = missiles.get(i);
